@@ -54,7 +54,7 @@ chrome.action.onClicked.addListener((tab) => {
 
 
 chrome.runtime.onMessage.addListener((message) => {
-	const API_KEY = "AIzaSyChf0G_Fm546tG5F8kkgia1RNDEsQeFqGI";
+	const API_KEY = "YOUR_API_KEY"; //REPLACE WITH ACTUAL KEY
 	const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
 
 
@@ -190,7 +190,7 @@ ${"\n\n"}
 
 function fetchGeminiData(prompt) {
 
-	const API_KEY = "AIzaSyChf0G_Fm546tG5F8kkgia1RNDEsQeFqGI";
+	const API_KEY = "YOUR_API_KEY"; //REPLACE WITH ACTUAL KEY
 	const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-pro:generateContent?key=${API_KEY}`;
 
 	return fetch(GEMINI_API_URL, {
