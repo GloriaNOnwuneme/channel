@@ -1,0 +1,16 @@
+ {
+  "manifest_version": 3,
+  "name": "Channel",
+  "version": "1.0",
+  "side_panel": {
+    "default_path": "side_panel.html"
+  },
+  "background": {
+    "service_worker": "service_worker.js"
+  },
+  "action": {},
+  "permissions": ["activeTab", "storage", "sidePanel", "tabs", "scripting", "clipboardRead", "clipboardWrite"],
+  "icons": { "16": "icon.png",
+           "48": "icon.png",
+          "128": "icon.png" }
+}

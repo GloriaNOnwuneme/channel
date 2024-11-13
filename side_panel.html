@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Channel</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+	<style>
+
+.material-symbols-outlined {
+  font-variation-settings:
+  'FILL' 0,
+  'wght' 400,
+  'GRAD' 0,
+  'opsz' 24
+}
+
+		*, *::after, *::before {box-sizing: border-box; scroll-behavior: smooth; padding: 0; margin: 0;}
+	/* Basic styling for the side panel */
+
+		body {
+			font-family: Arial, sans-serif;
+			background: linear-gradient(to bottom right, rgba(0,0,255, .5) 40%, white 40%), linear-gradient(to bottom right, rgba(0,0,255, .5) 26%, white 26%), linear-gradient(to bottom right, rgba(0,0,255, .5) 13%, white 13%);
+			padding-bottom: 14vh;
+			min-height: 100vh;
+			overflow-Y: hidden;
+			background-attachment: fixed;
+			background: url("motif6.png");
+			background-size: cover;
+			background-position: center bottom;
+		}
+
+		body, main { margin: 0; padding: 0;}
+		body {}
+		button { user-select: none;}
+
+		header {
+			text-align: center;
+			font-size: 2rem;
+			text-shadow: 2px 2px 5px rgba(0,0,0,.5);
+			color: white;
+			height: 4.6rem;
+			overflow: hidden;
+			transition: height 500ms;
+		}
+
+		
+		#quiz-container {
+			width: 100%;
+			overflow-x: hidden;
+			position: relative;
+			height: 85vh;
+			margin: 0;
+			// overflow: hidden;
+			transition: height 500ms;
+		}
+
+		#quiz-btns {
+			display: none;
+			gap: 1rem;
+			height: 1.3rem;
+			position: absolute;
+			width: 100%;
+			bottom: 0;
+			left: 0; & > * {background: darksalmon; border-radius: 5px; color: white; border: none; width: 100%;}}
+
+		#results-div, #share-btn-ctn { width: 100%;}
+		#results-div {height: 85vh; display: grid; place-content: center;}
+		#ideas-deck {display: block; height: 55vh; aspect-ratio: 1/1; position: relative; overflow: hidden;}
+		#ideas-deck > * {position: absolute; height: calc(100% - 40px); width: calc(100% - 40px); margin-top: 20px; margin-left: 20px; filter: drop-shadow(2px 2px 5px rgba(127,127,127,.4)); background: white; padding: 30px; border-radius: 50%; transition: border-radius 300ms, height 300ms; transform: scale(.85); filter: brightness(80%); animation: in-focus 700ms; animation-fill-mode: forwards;}
+
+		#ideas-deck > * button {color: darkorange; border-radius: 5px; border: 1.5px solid darkorange; background: none;}
+		#ideas-deck > *:not(:last-of-type) {animation-play-state: paused;}
+
+		#idea-gen-btn {color: white; border: 3px solid white; padding: .7rem; background: none; border-radius: 5px;}
+		@keyframes in-focus {
+			0% {transform: translateY(0%) scale(.85); filter: brightness(80%);}
+			30% {transform: translateY(10%) scale(.92); filter: brightness(87%);}
+			100% {transform: translateY(0%) scale(1); filter: brightness(100%);}
+		}
+
+		@keyframes scrap-idea {
+			0% {transform: translateY(0%);}
+			100% {transform: translateY(100%);}
+
+		}
+
+		/*#place {color: transparent; outline: none !important;}*/
+		.more-details {display: flex; flex-flow: column; gap: .5rem; margin-top: 1rem;}
+		.idea-expand {border-radius: 15px !important; height: 100% !important; width: 100% !important; margin: 0 !important; overflow-Y: scroll; filter: none !important;} 
+		.idea-select {height: 85vh; & input[type="date"] {margin-top: auto;}}
+
+
+		.idea-expand::-webkit-scrollbar {
+			width: 10px;
+			border-radius: 20px !important;
+			/*box-shadow: inset 3px 2px 8px slategrey, inset -1px -1px 1px lightgrey;*/
+}
+
+		.idea-expand::-webkit-scrollbar-thumb {
+			width: 4px;
+			height: 50% !important;
+			border-radius: 20px !important;
+			background: darkorange;
+		}
+
+		 
+		#cal-btn {display: flex; justify-content: space-between; padding: .2rem; margin-top: .2rem; border: none; background: darkorange !important; border-radius: 3px;}
+
+		#cal-btn > span:first-of-type {color: white;}
+		#cal-btn-icon {display: inline-block; background: url('calendar.png'); border: none; height: 100%; aspect-ratio: 1/1; background-size: contain;}
+
+		.details-icon, .search-icon {display: block; border: none; height: 100%; aspect-ratio: 1/1; background-size: contain !important;}
+
+		.details-icon {background: url("open_in_new.png");}
+
+		.search-icon {background: url("content_copy.png");}
+
+		#date-div {display: flex; flex-flow: column; width: 95%; align-items: stretch; justify-items: space-between; justify-content: space-between; border-bottom: .5px solid; padding: .3rem; margin-bottom: .5rem;}
+
+		#share-btn-ctn {display: none;}
+
+		#content-ctn {
+			display: grid;
+			position: fixed;
+			top: 0;
+			right: 0;
+			width: 100%;
+			height: 100vh;
+			z-index: 200;
+			place-content: center;
+			place-items: center;
+			backdrop-filter: brightness(50%);			
+		}
+
+
+		#content-comment-scroller {
+			height: 60vh;
+			width: 90%;
+			position: relative;
+			overflow: hidden;
+			scroll-snap-behavior: y mandatory;
+			border-radius: 15px;
+		}
+
+
+		#content-comment-scroller > * {
+			color: darksalmon;
+			display: block;
+			height: 100%;
+			width: 100%;
+			background-size: cover;
+			background: white;
+			display: flex;
+			position: relative;
+			flex-flow: column;
+			justify-content: space-evenly;
+			align-items: center;
+			font-size: 1.1rem;
+			text-align: center;
+		}
+
+		#content-comment {
+			width: 100%;
+			
+			
+			font-weight: bold;
+			& button {}
+
+			
+			& > * {margin: auto 40px;}
+		}	
+
+		#issue-id,#issue-change, #issue-change-id {display: none; color: white; width: 70%; height: 2rem; font-size: 1.5rem; background: linear-gradient(55deg, transparent 50%, rgba(200,240,200,.2) 50%), linear-gradient(darksalmon,darksalmon); border: none; border-radius: 1.9rem; box-shadow: inset -2px -2px 4px rgba(233, 150, 122,.7), inset -2px -2px 4px rgba(233, 150, 122,.7), inset 2px 2px 4px rgba(233, 150, 122,.7), 2px 2px 5px rgba(0,0,0,.3); animation: start ease 500ms 4000ms alternate infinite; animation-fill-mode: forwards;}
+
+		.manual-set {
+			width: 2rem !important;
+			height: 2rem !important;
+			border: 2rem solid !important;
+			border-width: 1.5rem 1rem 0rem 1rem !important;
+			border-radius: 0px !important;
+			border-color: darksalmon transparent transparent transparent !important;
+			background: none !important; 
+			box-shadow: none !important;
+			filter: drop-shadow( 2px 2px 5px rgba(0,0,0,.3));
+		}
+
+		#content-comment, #comment-input {
+			scroll-snap-align: center;
+		}
+		
+
+/*@keyframes start {
+	0% {transform: scale(.8);}
+	100% {transform: scale(1.1);}
+}
+
+		
+		*/
+
+/* Form and Fieldset Styles */
+form {
+  	display: flex;
+	flex-wrap: nowrap;
+	position: absolute; 
+	inset: 25px 0px; //change back to 20px only
+	font-size: .8rem;
+	overflow: hidden;
+	margin: 0;
+/*
+	overflow-x: scroll;
+	overflow-y: hidden;
+*/	
+	scroll-snap-type: x mandatory;
+	scrollbar-width: none;
+	padding: 10px;
+}
+
+fieldset, #ideas-deck > * {
+	display: flex;
+	position: absolute;
+	//background: white;
+	inset: 0px;
+	flex-flow: column;
+	justify-content: space-evenly;
+	align-items: center;
+}
+
+fieldset {
+	width: calc(80%);
+	scroll-snap-align: center;
+	flex: 0 0 auto;
+	margin: 0 10%;
+	padding: .5rem;
+	border: 2px solid white;
+	color: white;
+	border-radius: 15px;
+	transition: transform 750ms;
+}
+
+fieldset > div {display: grid; gap:.5rem; width: 100%; height: 100%;}
+
+fieldset:nth-of-type(3) {gap: .5rem;}
+
+fieldset:nth-of-type(3) label:first-of-type {display:flex; position: relative; flex-flow: column; text-align: center; font-size: 1.3rem; height: 100%;}
+#place {display:block; font-size: 1.3rem; padding: 0; width: 100%; text-align: center; height: 100%;}
+#results {display: block; position: relative; inset: 0;}
+
+.label-btn, label[for="where"] {display: flex; place-items: center; place-content: center; align-self: stretch; width: 100%; background: rgba(255,255,255,.2); backdrop-filter: blur(5px); border: 3px solid white; color: white; border-radius: 5px; font-size: 1.7rem; text-align: center !important; & input[type="radio"] {pointer-events: none; appearance: none;}}
+
+
+
+
+.summary {display: flex; justify-content: space-between; width: 80%; align-items: center; margin: 10%;}
+
+hr { box-shadow: 0px -2px 5px rgba(255,255,255,.4); align-self: start; margin-bottom: 0;}
+
+hr:first-of-type {margin-top: auto;}
+
+	.edit-btn {display: inline-block; background: url('edit.svg'), linear-gradient(to right, black, black); height: 1.3rem; aspect-ratio: 1/1; background-size: contain; border: none; border-radius: 5px; }
+
+	.template {position: relative; border-radius: 10px; box-shadow: 2px 2px 5px rgba(0,0,0,.3); padding: .2rem .4rem; padding-bottom: 1rem; margin-top: .5rem;}
+
+.hide {transform: translateY(100%);}
+
+.scrap-idea {animation: scrap-idea 500ms !important;}
+/* .in-focus {transform: scale(1.1);} */
+
+
+	legend {font-size: 1.4rem; display: grid; place-content: center; padding: 0; height: 1.6rem; aspect-ratio: 1/1; text-align: center; width: 67%; background: white; border-radius: 15px; border: 3px solid darksalmon; color: darksalmon; & p {margin: 0; display: grid; place-content: center; height: 100%; aspect-ratio: 1/1; border-radius: 5px; color: darksalmon;}}
+
+	
+	fieldset p {text-align: center;}
+
+	fieldset > p {width: 75%;}
+
+
+	.idea-card {position: relative; text-align: center;}
+
+	.ideas-deck {}
+
+	.idea-close {display: none; position: absolute; right: .5rem; top: .5rem; height: .8rem; aspect-ratio: 1/1; background: url('close.svg'), linear-gradient(to right, black, black); border-radius: 50%; border: none; background-size: contain;}
+	.expand-btn { padding: .2rem .4rem;}
+	.idea-resource, .search-btn {display: flex; align-content: center; align-items: center; justify-content: space-between; height: 2.9rem; padding: .2rem .4rem;}
+
+	.idea-resource {text-decoration: none; background: darkorange; color: white; padding: .2rem; border-radius: 1.2rem;}
+
+	.template-ctn {height: max-content; transition: height 500ms; & div {display: none;}}
+	
+	.show {& div {display: block !important;}}
+
+	.copy-btn {background: url('content_copy.png') !important; background-size: contain; height: 1.2rem; aspect-ratio: 1/1;}
+
+	.template .copy-btn {position: absolute; bottom: .5rem; right: .5rem; color: darkorange; background-size: contain !important; border: none !important;}
+
+	.show-template {padding: .2rem .4rem;}
+
+	.choice-btn {background: rgba(138,0,0,.7); color: white; padding: .2rem .4rem; font-size: 1.1rem; border: none; border-radius: 5px; margin-top: .4rem;}
+
+	#shuffle {visibility: hidden; z-index: 200; border-radius: 5px; border: 3px solid white; background: none; color: white; height: 2rem; font-size: 1.4rem; margin-top: .4rem;}	
+
+	#btn-group {display: grid; grid-template-columns: repeat(2, 1fr); grid-template-rows: repeat(2, 2rem); gap: .7rem; & > * {border: none; border-radius: 5px; color: white; display: grid; height: 100%; width: 100%; place-content: center; text-decoration: none; background: rgba(0,0,0,.8);}}
+
+
+/* Additional styles for navigation (if implemented) */
+
+
+	#results-pane {
+		width: 100%;
+		padding-top:.5rem;
+		& button {background: rgba(0,0,255, .5);}
+
+		& > * {visibility: collapse;}
+	}
+		
+		#share-btn {position: relative;}
+
+
+		footer {display: grid; grid-auto-flow: column; grid-template-columns: repeat(5, 1fr); justify-content: space-between; align-items: stretch; justify-items: stretch; position: fixed; width: calc(100%); left: 0; bottom: 0; /**/background: linear-gradient(to top, rgba(139,0,0, .3), transparent 35%);  height: 14vh; padding: 15px; gap: .7rem; box-shadow: ; & * {font-size: .7rem;} & > * {display: grid; width: 100%; height: 100%; background: none; border: 3px solid white; border-radius: 3px; place-content: center; & span {display: grid; place-content: inherit; color: white;}}}
+
+	
+		#share-btn-ctn, #share-results-ctn {
+			display: flex;
+			visibility: collapse;
+			gap: .4rem;
+			transition: height 500ms;
+			& > * {height: 100%; padding: 0; aspect-ratio: 1/1; background-size: cover !important; color: white; border: none; border-radius: 5px;}
+		}
+
+		#share-btn-ctn {
+			background: white;
+			width: max-content;
+			padding: .2rem;
+			border-radius: 3px;
+			position: absolute;
+			top: -40%;
+			left: 20%;
+			height: 30px;
+			box-shadow: 2px 2px 5px rgba(0,0,0,.3);
+		}
+
+		#share-btn-ctn::before {
+			content: "";
+			display: block;
+			position: absolute;
+			width: 10px;
+			height: 10px;
+			border: 10px solid;
+			border-color: white transparent transparent transparent;
+			bottom: 0; left:
+			20px;
+			transform: translateY(100%);
+		}
+
+
+		#share-results-ctn {margin-top: 1rem; width: 100%; gap: 1.7rem; & > * {display: block; width: 100%; } & * {font-size: 2rem;}}
+
+		.quiz-collapse {height: 0px !important;}
+		.summary-show {visibility: visible !important;}
+		.share-show {visibility: visible !important;}
+
+
+		#loading-div {
+			display: grid; /* back to grid */
+			position: fixed;
+			z-index: 2000 !important;
+
+			place-content: center;
+
+			background: radial-gradient(white, darkorange);
+			inset: 0;
+			width: 100%;
+			height: 100vh;
+			transition: opacity 200ms !important;
+			
+		}	
+
+
+		.remove-div {opacity: 0 !important;}
+
+	circle {
+		animation: float 10s infinite linear;
+	}
+
+	@keyframes float {
+		0% {
+			transform: translate(0, 0);
+		}
+		100% {
+			transform: translate(calc(100% - var(--radius)), calc(100% - var(--radius)));
+		}
+	}
+
+		@keyframes loading {
+			0% {opacity: 1;}
+			100% {opacity: 0;}
+		}
+
+	</style>
+
+</head>
+
+
+<body>
+	<header class="quiz-collapse"></header>
+	<main>
+		<div id="loading-div">
+
+<svg width="400" height="400" transform="scale(.25)" transform-origin="center" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darkorange" transform="rotate(245) scale(1.3)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="700ms" fill="freeze" begin=".5"/>
+
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" transform="rotate(65) scale(0.9)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="800ms" fill="freeze" begin=".4" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".8" transform="rotate(-135) scale(.61)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="900ms" fill="freeze" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".4" transform="rotate(315) scale(0.405)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="1200ms" fill="freeze" />
+	</g>
+
+  
+</svg>
+
+
+		</div>
+
+		<div id="content-ctn">
+
+		<div id="content-comment-scroller">
+			<div id="content-comment">
+				<h2>Hey there.</h2>
+				<p id="issue">
+
+<svg width="400" height="400" transform="scale(.25)" transform-origin="center" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darkorange" transform="rotate(245) scale(1.3)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="700ms" fill="freeze" begin=".5"/>
+
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" transform="rotate(65) scale(0.9)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="800ms" fill="freeze" begin=".4" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".8" transform="rotate(-135) scale(.61)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="900ms" fill="freeze" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".4" transform="rotate(315) scale(0.405)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="1200ms" fill="freeze" />
+	</g>
+
+  
+</svg>
+
+
+				</p>
+				<!-- Summary of page content"
+				<label for="issue">Select text on page:</label><input type="text" disabled>
+				-->
+
+				<button id="issue-id">LET'S GO</button>
+				<button id="issue-change">SOMETHING ELSE</button>
+				
+			</div>
+
+			<div id="content-input">
+				<label for="issue-entry">What would you like to work on today?</label> <!-- add textselector feature to autofill textarea-->
+				<textarea id="issue-manual" placeholder="..."></textarea>
+				<p><strong>To change the issue you want to focus on:</strong><ol><li>Click anywhere on the current page to select text, <strong>or</strong></li> <li>Close this panel, then navigate to a different website/tab.</li></ol></p>
+				<button id="issue-change-id">LET'S GO</button>
+			</div>
+
+		</div>
+
+		</div>
+
+		<div id="quiz-container">
+			<form id="idea-gen-form">
+				<fieldset>
+					<legend>So you want to:</legend>
+					<div>
+						
+<hr />
+						<p class="summary"><span id="how-summary"></span><button type="button" class="edit-btn"></button></p>
+
+
+<hr />			
+			<p class="summary"><span id="where-summary"></span><button type="button" class="edit-btn"></button></p>
+
+<hr />
+						<p class="summary"><span id="when-summary"></span><button type="button" class="edit-btn"></button></p>
+						<p>Ready for your mission?</p>
+					</div>
+					<input type="submit" id="idea-gen-btn" value="Let's Go">
+				</fieldset>
+
+				<fieldset>
+					<legend>When?</legend>
+					<div>
+						<label class="label-btn" for="one-off">One-Off<input id="one-off" name="when" type="radio" value="a-one-off-basis"></label>
+						<label class="label-btn" for="ongoing">Ongoing<input name="when" id="ongoing" type="radio" value="an-ongoing-basis"></label>
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>Where?</legend>
+					<div>
+						<label for="place">Where to take action?<br>
+							<input id="place" type="text" autocomplete="off">
+						</label>
+
+						<label for="where" style="margin-top: 1rem;">Next<input id="where" name="where" type="radio"></label>						
+
+						<!--
+						<label for="locally">Locally</label><input name="where" type="radio" value="locally" id="local">
+						<label for="regionally">Regionally</label><input name="where" type="radio" value="regionally" id="regional">
+						<label for="nationally">Nationally</label><input name="where" type="radio" value="nationally" id="national">
+						<label for="internationally">Internationally</label><input name="where" type="radio" value="internationally" id="international">
+						-->
+
+					</div>
+				</fieldset>
+
+				<fieldset>
+					<legend>How?</legend>
+					<div>
+						<label class="label-btn" for="communicate">Communicate<input name="how" type="radio" value="communicate" id="communicate"></label>
+						<label class="label-btn" for="use-creative-skills">Create<input name="how" type="radio" value="use-creative-skills" id="use-creative-skills"></label>
+						<label class="label-btn" for="donate">Donate<input name="how" type="radio" value="donate" id="donate"></label>
+						<label class="label-btn" for="learn">Learn<input name="how" type="radio" value="learn" id="learn"></label>
+					</div>
+				</fieldset>
+
+			</form>
+
+		</div>
+
+		
+		<div id="results-div">
+
+
+<svg width="400" height="400" transform="scale(.25)" transform-origin="center" version="1.1" xmlns="http://www.w3.org/2000/svg">
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darkorange" transform="rotate(245) scale(1.3)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="700ms" fill="freeze" begin=".5"/>
+
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" transform="rotate(65) scale(0.9)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="800ms" fill="freeze" begin=".4" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".8" transform="rotate(-135) scale(.61)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;-180 0 0;-360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="900ms" fill="freeze" />
+	</g>
+
+
+	<g transform-origin="center" opacity="0">
+	<path d="M320 200 A 120,120 0 1,1 284.8528,115.1472" stroke="darksalmon" opacity=".4" transform="rotate(315) scale(0.405)" transform-origin="center" fill="none" stroke-width="40"/>
+	<animateTransform attributeName="transform" type="rotate" values="0 0 0;180 0 0;360 0 0" dur="700ms" fill="freeze" repeatCount="indefinite" />
+	<animate attributeName="opacity" values="0;1" dur="1200ms" fill="freeze" />
+	</g>
+
+  
+</svg>
+
+
+
+
+			<button id="shuffle">Keep Looking</button>
+	
+
+			<div id="review-collapse"></div>
+
+		</div>
+
+
+	</main>
+
+	
+
+	<script src="side_panel.js"></script>
+</body>
+
+</html>
